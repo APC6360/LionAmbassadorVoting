@@ -35,7 +35,7 @@ export default function Home() {
               <ExecRole>President</ExecRole>
             </ExecCard>
             <ExecCard>
-              <ExecImage src="/photos/olivia-fisher.jfif" alt="Olivia Fisher" width={200} height={200} />
+              <ExecImage src="/photos/olivia-fisher.jpg" alt="Olivia Fisher" width={200} height={200} />
               <ExecName>Olivia Fisher</ExecName>
               <ExecRole>Executive Vice President</ExecRole>
             </ExecCard>

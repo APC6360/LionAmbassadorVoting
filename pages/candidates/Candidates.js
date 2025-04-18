@@ -30,8 +30,8 @@ const positions = [
     color: "#FFFFFF",
     candidates: [
       { name: "Alexys Alonzo", committee: "Atherton", photo: "alexys-alonzo.jpg" },
-      { name: "Avery Needham", committee: "Walker", photo: "avery-needham.jfif" },
-      { name: "Grace Rothenberg", committee: "Walker", photo: "grace-rothenberg.jfif" }
+      { name: "Avery Needham", committee: "Walker", photo: "avery-needham.jpg" },
+      { name: "Grace Rothenberg", committee: "Walker", photo: "grace-rothenberg.jpg" }
     ]
   },
   {
@@ -75,7 +75,7 @@ const positions = [
     color: "#FFFFFF",
     candidates: [
       { name: "Amanda Kulak", committee: "N/A", photo: "amanda-kulak.jpg" },
-      { name: "Isabella Tramontin", committee: "Atherton", photo: "isabella-tramontin.jfif" },
+      { name: "Isabella Tramontin", committee: "Atherton", photo: "isabella-tramontin.jpg" },
       { name: "Evan Varlas", committee: "Walker", photo: "evan-varlas.jpg" }
     ]
   },
