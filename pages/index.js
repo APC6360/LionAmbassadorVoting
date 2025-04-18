@@ -21,26 +21,13 @@ export default function Home() {
             </Subtitle>
             <ButtonGroup>
               <VoteButton href="/vote">Vote Now</VoteButton>
-              <ViewCandidates href="/candidates">View Candidates</ViewCandidates>
+              <ViewCandidates href="/candidates/Candidates">View Candidates</ViewCandidates>
             </ButtonGroup>
           </ContentSection>
         </HeaderSection>
 
-        <MissionSection>
-          <MissionTitle>Who are the Lion Ambassadors?</MissionTitle>
-          <MissionText>
-            Lion Ambassadors aim to communicate Penn State’s <Emphasized>history</Emphasized> & <strong>personality</strong>, strengthen University <Underlined>traditions</Underlined>,
-            and instill Penn State <strong>pride</strong> in current and future students, alumni, and friends.
-            We strive to foster the idea that involvement with Penn State is a <Underlined>lifelong</Underlined> <Underlined>commitment</Underlined>.
-          </MissionText>
-          <MissionText>
-            As the Student Alumni Corps, L’Ambs proudly represent the <strong>Penn State Alumni Association</strong> in order to host
-            events and programming that show our dedication to this mission.
-          </MissionText>
-        </MissionSection>
-
         <ExecSection>
-          <ExecTitle>Meet the Current Executive Team</ExecTitle>
+          <ExecTitle>Meet the Current Leadership</ExecTitle>
           <ExecGrid>
             <ExecCard>
               <ExecImage src="/photos/max-gibbard.jpg" alt="Max Gibbard" width={200} height={200} />
@@ -59,6 +46,20 @@ export default function Home() {
             </ExecCard>
           </ExecGrid>
         </ExecSection>
+        <MissionSection>
+          <MissionTitle>Who are the Lion Ambassadors?</MissionTitle>
+          <MissionText>
+            Lion Ambassadors aim to communicate Penn State’s <Emphasized>history</Emphasized> & <strong>personality</strong>, strengthen University <Underlined>traditions</Underlined>,
+            and instill Penn State <strong>pride</strong> in current and future students, alumni, and friends.
+            We strive to foster the idea that involvement with Penn State is a <Underlined>lifelong</Underlined> <Underlined>commitment</Underlined>.
+          </MissionText>
+          <MissionText>
+            As the Student Alumni Corps, L’Ambs proudly represent the <strong>Penn State Alumni Association</strong> in order to host
+            events and programming that show our dedication to this mission.
+          </MissionText>
+        </MissionSection>
+
+        
       </PageContainer>
     </>
   )
@@ -148,7 +149,7 @@ const ViewCandidates = styled(Link)`
 const MissionSection = styled.div`
   padding: 60px 20px;
   background-color: rgba(255, 255, 255, 0.05);
-  margin: 40px auto 0;
+  
   font-size: 22px;
   line-height: 1.8;
   text-align: center;
@@ -177,6 +178,7 @@ const ExecSection = styled.section`
   color: #0A1B3F;
   padding: 60px 20px;
   text-align: center;
+  margin-bottom: 0;
 `;
 
 const ExecTitle = styled.h2`
