@@ -20,7 +20,7 @@ export default function Home() {
               Your voice matters. Vote for the future of the Penn State Student Alumni Corps.
             </Subtitle>
             <ButtonGroup>
-              <VoteButton href="/vote">Vote Now</VoteButton>
+              <VoteButton href="/candidates/CandidatesVotes">Vote Now</VoteButton>
               <ViewCandidates href="/candidates/Candidates">View Candidates</ViewCandidates>
             </ButtonGroup>
           </ContentSection>

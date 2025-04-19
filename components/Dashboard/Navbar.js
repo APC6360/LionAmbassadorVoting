@@ -16,7 +16,7 @@ const Navbar = () => {
       </LeftSide>
       <NavLinks>
         <StyledButton href='/candidates/Candidates'>Candidates</StyledButton>
-        <StyledButton href="/about">About</StyledButton>
+        <StyledButton href="/candidates/CandidatesVotes">Vote Now!</StyledButton>
       </NavLinks>
     </Nav>
   );
