@@ -2,7 +2,7 @@ import React from 'react'
 import { styled } from 'styled-components'
 import Navbar from "@/components/Dashboard/Navbar"
 import Image from 'next/image'
-import { positions } from './candidatesData'; 
+import { positions } from '../../components/Dashboard/candidatesData'; 
 
 
 
