@@ -42,8 +42,8 @@ class VotingContractInterface {
       return false;
     }
   };
-  // Add this method to your VotingContractInterface class
-getAllContractPositions = async () => {
+  
+    getAllContractPositions = async () => {
     try {
       await this.ensureInitialized();
       
@@ -74,12 +74,12 @@ getAllContractPositions = async () => {
       return [];
     }
   };
-  // Add this method to your VotingContractInterface class
-addPositions = async () => {
+
+    addPositions = async () => {
     try {
       await this.ensureInitialized();
       
-      // Check if we're the admin
+      
       const admin = await this.contract.admin();
       const currentAccount = await this.signer.getAddress();
       
@@ -88,14 +88,14 @@ addPositions = async () => {
         return false;
       }
       
-      // Add positions if they don't exist
+      
       const positionCount = await this.contract.getPositionCount();
       if (positionCount.toNumber() > 0) {
         console.log('Positions already exist in the contract');
         return true;
       }
       
-      // Add all the positions from candidatesData.js
+      
       const positionsToAdd = [
         { title: "University Relations Director", maxVotes: 1 },
         { title: "Director of Communications", maxVotes: 1 },
@@ -120,12 +120,12 @@ addPositions = async () => {
       return false;
     }
   };
-  // Add this method to your VotingContractInterface class
+  
     addCandidates = async () => {
     try {
       await this.ensureInitialized();
       
-      // Check if we're the admin
+    
       const admin = await this.contract.admin();
       const currentAccount = await this.signer.getAddress();
       
@@ -134,26 +134,26 @@ addPositions = async () => {
         return false;
       }
       
-      // Import candidates data
       
-      // Check position count
+      
+     
       const positionCount = await this.contract.getPositionCount();
       if (positionCount.toNumber() !== positions.length) {
         console.error('Position count mismatch. Add positions first.');
         return false;
       }
       
-      // Add candidates for each position
+     
       for (let i = 0; i < positions.length; i++) {
         const candidateCount = await this.contract.getCandidateCount(i);
         
-        // Skip if candidates already exist for this position
+        
         if (candidateCount.toNumber() > 0) {
           console.log(`Candidates already exist for position ${i}: ${positions[i].title}`);
           continue;
         }
         
-        // Add all candidates for this position
+     
         for (const candidate of positions[i].candidates) {
           console.log(`Adding candidate: ${candidate.name} to position: ${positions[i].title}`);
           const tx = await this.contract.addCandidate(
@@ -173,7 +173,7 @@ addPositions = async () => {
       return false;
     }
   };
-  // voting positions and candidates
+  
   getAllPositionsWithCandidates = async () => {
     try {
       await this.ensureInitialized();
@@ -226,13 +226,13 @@ addPositions = async () => {
       
       console.log('Votes to submit:', votes);
       
-      // Format votes for the contract
+      
       const positionIndices = [];
       const candidateSelections = [];
       
-      // Process positions sequentially
+   
       for (const [position, candidates] of Object.entries(votes)) {
-        // Find position index
+      
         const positionIndex = await this.findPositionIndex(position);
         console.log(`Position: "${position}", Index: ${positionIndex}`);
         
@@ -251,9 +251,9 @@ addPositions = async () => {
       console.log('Position indices:', positionIndices);
       console.log('Candidate selections:', candidateSelections);
       
-      // Call the contract to cast votes
+     
       const tx = await this.contract.castVotes(positionIndices, candidateSelections);
-      return await tx.wait(); // Wait for transaction to be mined
+      return await tx.wait(); 
     } catch (error) {
       console.error('Error casting votes:', error);
       throw error;
@@ -310,7 +310,7 @@ findPositionIndex = async (title) => {
         return -1;
       }
       
-      // Search for the position by title
+     
       for (let i = 0; i < positionCount.toNumber(); i++) {
         const positionInfo = await this.contract.getPosition(i);
         if (positionInfo.title === title) {
@@ -368,6 +368,31 @@ debugPositions = async () => {
       return [];
     }
   };
+ 
+    hasUserVoted = async (account) => {
+        try {
+        await this.ensureInitialized();
+      
+        if (!account) {
+            throw new Error('Account address is required');
+         }
+      
+        const positionCount = await this.contract.getPositionCount();
+      
+       
+        for (let i = 0; i < positionCount.toNumber(); i++) {
+            const selections = await this.contract.getVoterSelections(account, i);
+            if (selections && selections.length > 0) {
+            return true; 
+         }
+        }
+      
+        return false; 
+        } catch (error) {
+        console.error('Error checking if user has voted:', error);
+        return false;
+        }
+    };
 }
 
 export default new VotingContractInterface();

@@ -83,39 +83,58 @@ export default function VotingPage() {
       try {
         await connectWallet();
         setError('');
-        return; // Return here, as we need to wait for the connection to update
+        return; 
       } catch (error) {
         setError('Failed to connect wallet. Please try again.');
         return;
       }
     }
-
-    // Check if there are any votes to submit
+  
+    
     if (Object.keys(votes).length === 0) {
       setError('Please select at least one candidate before submitting.');
       return;
     }
-
+  
     try {
       setIsSubmitting(true);
       setError('');
       setSuccess('');
-
-      // Cast votes through the contract
+  
+      
+      const hasVoted = await checkIfUserHasVoted();
+      
+      if (hasVoted) {
+        setSuccess('You have already voted. Your previous votes are loaded above.');
+        setIsSubmitting(false);
+        return;
+      }
+  
+    
       const result = await VotingContractInterface.castVotes(votes, account);
       
       setSuccess('Your votes have been successfully submitted to the blockchain!');
       console.log('Transaction result:', result);
       
-      // Redirect to results page after successful submission
+     
       setTimeout(() => {
-        router.push('/pages/results');
+        router.push('/results');
       }, 2000);
     } catch (error) {
       console.error('Error submitting votes:', error);
       setError(`Failed to submit votes: ${error.message || 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+  
+ 
+  const checkIfUserHasVoted = async () => {
+    try {
+      return await VotingContractInterface.hasUserVoted(account);
+    } catch (error) {
+      console.error('Error checking if user has voted:', error);
+      return false;
     }
   };
 
