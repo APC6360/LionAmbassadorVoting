@@ -1,5 +1,7 @@
 import { ethers } from 'ethers';
 import CandidateVotingABI from './CandidateVotingABI.json';
+import { positions } from '../components/Dashboard/candidatesData';
+
 
 class VotingContractInterface {
   constructor() {
@@ -40,7 +42,137 @@ class VotingContractInterface {
       return false;
     }
   };
-
+  // Add this method to your VotingContractInterface class
+getAllContractPositions = async () => {
+    try {
+      await this.ensureInitialized();
+      
+      const positionCount = await this.contract.getPositionCount();
+      console.log(`Total positions in contract: ${positionCount.toNumber()}`);
+      
+      if (positionCount.toNumber() === 0) {
+        console.error("No positions found in the contract. Admin needs to add positions first.");
+        return [];
+      }
+      
+      const positions = [];
+      for (let i = 0; i < positionCount.toNumber(); i++) {
+        const positionInfo = await this.contract.getPosition(i);
+        positions.push({
+          index: i,
+          title: positionInfo.title,
+          maxVotes: positionInfo.maxVotes.toNumber(),
+          candidateCount: positionInfo.candidateCount
+        });
+        console.log(`Position ${i}: "${positionInfo.title}" (Max votes: ${positionInfo.maxVotes})`);
+      }
+      
+      console.table(positions);
+      return positions;
+    } catch (error) {
+      console.error('Error getting contract positions:', error);
+      return [];
+    }
+  };
+  // Add this method to your VotingContractInterface class
+addPositions = async () => {
+    try {
+      await this.ensureInitialized();
+      
+      // Check if we're the admin
+      const admin = await this.contract.admin();
+      const currentAccount = await this.signer.getAddress();
+      
+      if (admin.toLowerCase() !== currentAccount.toLowerCase()) {
+        console.error('Only the contract admin can add positions');
+        return false;
+      }
+      
+      // Add positions if they don't exist
+      const positionCount = await this.contract.getPositionCount();
+      if (positionCount.toNumber() > 0) {
+        console.log('Positions already exist in the contract');
+        return true;
+      }
+      
+      // Add all the positions from candidatesData.js
+      const positionsToAdd = [
+        { title: "University Relations Director", maxVotes: 1 },
+        { title: "Director of Communications", maxVotes: 1 },
+        { title: "Secretary", maxVotes: 1 },
+        { title: "2kOld Committee Directors", maxVotes: 3 },
+        { title: "2kNew Committee Directors", maxVotes: 3 },
+        { title: "Director of Internal Affairs", maxVotes: 1 },
+        { title: "Tour Director", maxVotes: 1 },
+        { title: "Chief Information Director", maxVotes: 1 }
+      ];
+      
+      for (const position of positionsToAdd) {
+        console.log(`Adding position: ${position.title} with max votes: ${position.maxVotes}`);
+        const tx = await this.contract.addPosition(position.title, position.maxVotes);
+        await tx.wait();
+      }
+      
+      console.log('All positions added successfully');
+      return true;
+    } catch (error) {
+      console.error('Error adding positions:', error);
+      return false;
+    }
+  };
+  // Add this method to your VotingContractInterface class
+    addCandidates = async () => {
+    try {
+      await this.ensureInitialized();
+      
+      // Check if we're the admin
+      const admin = await this.contract.admin();
+      const currentAccount = await this.signer.getAddress();
+      
+      if (admin.toLowerCase() !== currentAccount.toLowerCase()) {
+        console.error('Only the contract admin can add candidates');
+        return false;
+      }
+      
+      // Import candidates data
+      
+      // Check position count
+      const positionCount = await this.contract.getPositionCount();
+      if (positionCount.toNumber() !== positions.length) {
+        console.error('Position count mismatch. Add positions first.');
+        return false;
+      }
+      
+      // Add candidates for each position
+      for (let i = 0; i < positions.length; i++) {
+        const candidateCount = await this.contract.getCandidateCount(i);
+        
+        // Skip if candidates already exist for this position
+        if (candidateCount.toNumber() > 0) {
+          console.log(`Candidates already exist for position ${i}: ${positions[i].title}`);
+          continue;
+        }
+        
+        // Add all candidates for this position
+        for (const candidate of positions[i].candidates) {
+          console.log(`Adding candidate: ${candidate.name} to position: ${positions[i].title}`);
+          const tx = await this.contract.addCandidate(
+            i,
+            candidate.name,
+            candidate.committee,
+            candidate.photo
+          );
+          await tx.wait();
+        }
+      }
+      
+      console.log('All candidates added successfully');
+      return true;
+    } catch (error) {
+      console.error('Error adding candidates:', error);
+      return false;
+    }
+  };
   // voting positions and candidates
   getAllPositionsWithCandidates = async () => {
     try {
@@ -87,21 +219,28 @@ class VotingContractInterface {
         throw new Error('Wallet not connected');
       }
       
-     
+      const positionCount = await this.contract.getPositionCount();
+      if (positionCount.toNumber() === 0) {
+        throw new Error('No positions found in the contract. Admin needs to add positions first.');
+      }
+      
+      console.log('Votes to submit:', votes);
+      
+      // Format votes for the contract
       const positionIndices = [];
       const candidateSelections = [];
       
-     
+      // Process positions sequentially
       for (const [position, candidates] of Object.entries(votes)) {
-       
+        // Find position index
         const positionIndex = await this.findPositionIndex(position);
-        console.log(`Position: ${position}, Index: ${positionIndex}`);
+        console.log(`Position: "${position}", Index: ${positionIndex}`);
         
         if (positionIndex !== -1) {
           positionIndices.push(positionIndex);
           candidateSelections.push(candidates);
         } else {
-          console.error(`Invalid position: ${position}`);
+          console.error(`Position not found: ${position}`);
         }
       }
       
@@ -109,12 +248,12 @@ class VotingContractInterface {
         throw new Error('No valid positions selected');
       }
       
-      console.log('Position indices to submit:', positionIndices);
-      console.log('Candidate selections to submit:', candidateSelections);
+      console.log('Position indices:', positionIndices);
+      console.log('Candidate selections:', candidateSelections);
       
-      
+      // Call the contract to cast votes
       const tx = await this.contract.castVotes(positionIndices, candidateSelections);
-      return await tx.wait(); 
+      return await tx.wait(); // Wait for transaction to be mined
     } catch (error) {
       console.error('Error casting votes:', error);
       throw error;
@@ -159,25 +298,26 @@ class VotingContractInterface {
     }
   };
 
-  // Helper method to find position index by title
-  findPositionIndex = async (title) => {
+ 
+findPositionIndex = async (title) => {
     try {
       await this.ensureInitialized();
       
-    
       const positionCount = await this.contract.getPositionCount();
       
-     
+      if (positionCount.toNumber() === 0) {
+        console.error('No positions found in the contract');
+        return -1;
+      }
+      
+      // Search for the position by title
       for (let i = 0; i < positionCount.toNumber(); i++) {
         const positionInfo = await this.contract.getPosition(i);
-        
-      
         if (positionInfo.title === title) {
           return i;
         }
       }
       
-     
       console.error(`Position not found in contract: ${title}`);
       return -1;
     } catch (error) {

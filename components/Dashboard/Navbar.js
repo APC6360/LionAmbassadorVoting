@@ -8,10 +8,8 @@ import Home from '@/components/Dashboard/Home';
 import { useRouter } from 'next/router';
 
 const Navbar = () => {
- 
   const walletContext = useWallet();
   
- 
   const account = walletContext?.account || '';
   const isConnected = walletContext?.isConnected || false;
   const connectWallet = walletContext?.connectWallet || (() => {});
@@ -55,6 +53,7 @@ const Navbar = () => {
       <NavLinks>
         <StyledButton href='/candidates/Candidates'>Candidates</StyledButton>
         <StyledButton href="/candidates/CandidatesVotes">Vote Now!</StyledButton>
+        <StyledButton href="/admin">Admin</StyledButton>
         <WalletButton 
           onClick={handleWalletClick}
           isConnected={isConnected}

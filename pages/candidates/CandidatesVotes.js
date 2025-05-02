@@ -15,16 +15,31 @@ export default function VotingPage() {
   const { account, isConnected, connectWallet } = useWallet();
   const router = useRouter();
 
-  
+  // Add this to your useEffect in VotingPage.js
   useEffect(() => {
-    if (isConnected && account) {
-      loadUserVotes();
-      VotingContractInterface.logAllPositions();
-      VotingContractInterface.debugPositions().then(positions => {
-        console.log('Contract positions:', positions);
-      });
-    }
+    const initializeVoting = async () => {
+      if (isConnected && account) {
+        try {
+          // Check if positions exist in the contract
+          const contractPositions = await VotingContractInterface.getAllContractPositions();
+        
+          if (contractPositions.length === 0) {
+            setError('No positions found in the contract. If you are the admin, please add positions first.');
+            return;
+          }
+        
+          // Load user votes if positions exist
+          await loadUserVotes();
+        } catch (error) {
+          console.error('Error initializing voting:', error);
+          setError(`Error: ${error.message}`);
+       }
+      }
+    };
+  
+    initializeVoting();
   }, [isConnected, account]);
+  
 
   const loadUserVotes = async () => {
     try {
