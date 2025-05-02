@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { logOut } from '@/backend/Auth';
@@ -8,6 +8,7 @@ import Home from '@/components/Dashboard/Home';
 import { useRouter } from 'next/router';
 
 const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
   const walletContext = useWallet();
   
   const account = walletContext?.account || '';
@@ -45,18 +46,42 @@ const Navbar = () => {
     }
   };
 
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <Nav>
       <LeftSide>
         <LAMBS href="/">Lion Ambassadors</LAMBS>
       </LeftSide>
-      <NavLinks>
-        <StyledButton href='/candidates/Candidates'>Candidates</StyledButton>
-        <StyledButton href="/candidates/CandidatesVotes">Vote Now!</StyledButton>
-        <StyledButton href="/results">Results</StyledButton>
-        <StyledButton href="/admin">Admin</StyledButton>
+      
+      <HamburgerButton onClick={toggleMenu}>
+        <HamburgerIcon open={menuOpen}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </HamburgerIcon>
+      </HamburgerButton>
+      
+      <NavLinks open={menuOpen}>
+        <StyledButton href='/candidates/Candidates' onClick={() => setMenuOpen(false)}>
+          Candidates
+        </StyledButton>
+        <StyledButton href="/candidates/CandidatesVotes" onClick={() => setMenuOpen(false)}>
+          Vote Now!
+        </StyledButton>
+        <StyledButton href="/results" onClick={() => setMenuOpen(false)}>
+          Results
+        </StyledButton>
+        <StyledButton href="/admin" onClick={() => setMenuOpen(false)}>
+          Admin
+        </StyledButton>
         <WalletButton 
-          onClick={handleWalletClick}
+          onClick={() => {
+            handleWalletClick();
+            setMenuOpen(false);
+          }}
           isConnected={isConnected}
         >
           {getButtonText()}
@@ -70,6 +95,7 @@ const LeftSide = styled.div`
   display: flex;
   gap: 1rem;
   align-items: center;
+  z-index: 10;
 `;
 
 const LAMBS = styled(Link)`
@@ -91,12 +117,28 @@ const Nav = styled.nav`
   color: white;
   font-family: 'Gill Sans MT';
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
 `;
 
 const NavLinks = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #071530;
+    padding: ${props => (props.open ? '1rem 0' : '0')};
+    max-height: ${props => (props.open ? '500px' : '0')};
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    box-shadow: ${props => (props.open ? '0 4px 12px rgba(0, 0, 0, 0.3)' : 'none')};
+    z-index: 100;
+  }
 `;
 
 const StyledButton = styled(Link)`
@@ -111,6 +153,12 @@ const StyledButton = styled(Link)`
     transition: 0.3s;
     background-color:rgb(45, 112, 179);
     color:rgb(255, 255, 255);
+  }
+  
+  @media (max-width: 768px) {
+    width: 80%;
+    text-align: center;
+    margin: 8px 0;
   }
 `;
 
@@ -128,6 +176,58 @@ const WalletButton = styled.button`
     transition: 0.3s;
     background-color: ${props => props.isConnected ? '#84cc16' : 'rgb(45, 112, 179)'};
     color: ${props => props.isConnected ? '#0A1B3F' : 'rgb(255, 255, 255)'};
+  }
+  
+  @media (max-width: 768px) {
+    width: 80%;
+    margin: 8px 0;
+  }
+`;
+
+const HamburgerButton = styled.button`
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 10;
+  
+  @media (max-width: 768px) {
+    display: block;
+  }
+`;
+
+const HamburgerIcon = styled.div`
+  width: 25px;
+  height: 20px;
+  position: relative;
+  
+  span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: white;
+    border-radius: 3px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+    
+    &:nth-child(1) {
+      top: ${props => (props.open ? '9px' : '0px')};
+      transform: ${props => (props.open ? 'rotate(45deg)' : 'rotate(0)')};
+    }
+    
+    &:nth-child(2) {
+      top: 9px;
+      opacity: ${props => (props.open ? '0' : '1')};
+    }
+    
+    &:nth-child(3) {
+      top: ${props => (props.open ? '9px' : '18px')};
+      transform: ${props => (props.open ? 'rotate(-45deg)' : 'rotate(0)')};
+    }
   }
 `;
 

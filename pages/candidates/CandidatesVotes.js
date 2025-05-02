@@ -129,7 +129,7 @@ export default function VotingPage() {
       const hasVoted = await checkIfUserHasVoted();
       
       if (hasVoted) {
-        setSuccess('You have already voted. Your previous votes are loaded above.');
+        setSuccess('You have already voted.');
         setIsSubmitting(false);
         return;
       }
