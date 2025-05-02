@@ -1,10 +1,10 @@
-// pages/voting/results.js
+
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import Navbar from '@/components/Dashboard/Navbar';
 import Image from 'next/image';
-import VotingContractInterface from '../../context/VotingContractInterface';
-import { useWallet } from '../../context/WalletContext';
+import VotingContractInterface from '../context/VotingContractInterface';
+import { useWallet } from '../context/WalletContext';
 
 export default function ResultsPage() {
   const [results, setResults] = useState([]);
@@ -18,17 +18,17 @@ export default function ResultsPage() {
       try {
         setLoading(true);
         
-        // Initialize contract
+     
         const initialized = await VotingContractInterface.initialize();
         if (!initialized) {
           throw new Error('Failed to initialize contract');
         }
         
-        // Get positions with candidates and vote counts
+       
         const positionsData = await VotingContractInterface.getAllPositionsWithCandidates();
         setResults(positionsData);
         
-        // Get total voter count if available
+       
         try {
           const count = await VotingContractInterface.contract.voterCount();
           setVoterCount(count.toNumber());
@@ -78,7 +78,7 @@ export default function ResultsPage() {
                 <PositionTitle>{position.title}</PositionTitle>
                 <CandidatesGrid>
                   {position.candidates.map((candidate, idx) => {
-                    // Calculate percentage of votes
+                 
                     const totalVotes = position.candidates.reduce(
                       (sum, c) => sum + c.voteCount, 0
                     );
