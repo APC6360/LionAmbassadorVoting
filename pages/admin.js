@@ -79,6 +79,7 @@ export default function AdminPage() {
     <Container>
       
       <Title>Voting Contract Admin</Title>
+      <Navbar />
       
       {!isConnected ? (
         <ConnectButton onClick={connectWallet}>Connect Wallet</ConnectButton>
@@ -86,7 +87,7 @@ export default function AdminPage() {
         <Message>{message}</Message>
       ) : (
         <>
-        <Navbar />
+        
           <StatusSection>
             <h2>Contract Status</h2>
             <p>Connected as: {account}</p>
