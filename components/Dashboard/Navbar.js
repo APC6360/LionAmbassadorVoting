@@ -53,6 +53,7 @@ const Navbar = () => {
       <NavLinks>
         <StyledButton href='/candidates/Candidates'>Candidates</StyledButton>
         <StyledButton href="/candidates/CandidatesVotes">Vote Now!</StyledButton>
+        <StyledButton href="/results">Results</StyledButton>
         <StyledButton href="/admin">Admin</StyledButton>
         <WalletButton 
           onClick={handleWalletClick}

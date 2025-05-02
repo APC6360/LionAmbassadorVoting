@@ -43,10 +43,34 @@ export default function VotingPage() {
 
   const loadUserVotes = async () => {
     try {
-      const userVotes = await VotingContractInterface.getVoterSelections(account);
-      if (Object.keys(userVotes).length > 0) {
-        setVotes(userVotes);
+      if (!isConnected || !account) {
+        return;
+      }
+      
+      
+      const contractPositions = await VotingContractInterface.getAllContractPositions();
+      
+      
+      const userVotesByPosition = {};
+      
+      
+      for (let i = 0; i < contractPositions.length; i++) {
+        const position = contractPositions[i];
+        const selections = await VotingContractInterface.contract.getVoterSelections(account, i);
+        
+       
+        if (selections && selections.length > 0) {
+          userVotesByPosition[position.title] = selections;
+        }
+      }
+      
+     
+      if (Object.keys(userVotesByPosition).length > 0) {
+        setVotes(userVotesByPosition);
         setSuccess('Your previous votes have been loaded.');
+        console.log('Loaded user votes:', userVotesByPosition);
+      } else {
+        console.log('No previous votes found for this user');
       }
     } catch (error) {
       console.error('Error loading user votes:', error);

@@ -261,7 +261,8 @@ class VotingContractInterface {
   };
 
   //voter selections
-  getVoterSelections = async (account) => {
+
+    getVoterSelections = async (account) => {
     try {
       await this.ensureInitialized();
       
@@ -269,14 +270,17 @@ class VotingContractInterface {
         throw new Error('Wallet not connected');
       }
       
+     
       const positionCount = await this.contract.getPositionCount();
       const selections = {};
       
+    
       for (let i = 0; i < positionCount.toNumber(); i++) {
         const positionInfo = await this.contract.getPosition(i);
         const voterSelections = await this.contract.getVoterSelections(account, i);
         
-        if (voterSelections.length > 0) {
+        
+        if (voterSelections && voterSelections.length > 0) {
           selections[positionInfo.title] = voterSelections;
         }
       }
