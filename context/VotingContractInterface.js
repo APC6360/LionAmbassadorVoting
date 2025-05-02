@@ -12,19 +12,19 @@ class VotingContractInterface {
   initialize = async () => {
     try {
       if (window.ethereum) {
-        // Create a provider
+    
         this.provider = new ethers.providers.Web3Provider(window.ethereum);
         
-        // Get the network to ensure we're on TestBNB
+        //testbnb network
         const network = await this.provider.getNetwork();
-        if (network.chainId !== 97) { // 97 is the chain ID for Binance Smart Chain Testnet
+        if (network.chainId !== 97) {
           throw new Error('Please connect to the Binance Smart Chain Testnet');
         }
         
         // Get the signer
         this.signer = this.provider.getSigner();
         
-        // Initialize the contract
+        // contract initliazation 
         this.contract = new ethers.Contract(
           this.contractAddress,
           CandidateVotingABI,
@@ -41,7 +41,7 @@ class VotingContractInterface {
     }
   };
 
-  // Get all voting positions with their candidates and vote counts
+  // voting positions and candidates
   getAllPositionsWithCandidates = async () => {
     try {
       await this.ensureInitialized();
@@ -78,7 +78,7 @@ class VotingContractInterface {
     }
   };
 
-  // Cast votes for candidates
+  //cast votes
   castVotes = async (votes, account) => {
     try {
       await this.ensureInitialized();
@@ -87,12 +87,12 @@ class VotingContractInterface {
         throw new Error('Wallet not connected');
       }
       
-      // Format votes for the contract
+      //formatting votes
       const positionIndices = [];
       const candidateSelections = [];
       
       Object.entries(votes).forEach(([position, candidates]) => {
-        // Find the position index
+        // position index
         const positionIndex = this.findPositionIndex(position);
         if (positionIndex !== -1) {
           positionIndices.push(positionIndex);
@@ -104,16 +104,16 @@ class VotingContractInterface {
         throw new Error('No valid positions selected');
       }
       
-      // Call the contract to cast votes
+      // calling contract
       const tx = await this.contract.castVotes(positionIndices, candidateSelections);
-      return await tx.wait(); // Wait for transaction to be mined
+      return await tx.wait(); 
     } catch (error) {
       console.error('Error casting votes:', error);
       throw error;
     }
   };
 
-  // Get voter's selections
+  //voter selections
   getVoterSelections = async (account) => {
     try {
       await this.ensureInitialized();
@@ -141,7 +141,7 @@ class VotingContractInterface {
     }
   };
 
-  // Helper method to ensure the contract is initialized
+  //ensure contract is initialized
   ensureInitialized = async () => {
     if (!this.contract) {
       const initialized = await this.initialize();
@@ -165,6 +165,22 @@ class VotingContractInterface {
     };
     
     return positionMap[title] !== undefined ? positionMap[title] : -1;
+  };
+ 
+    logAllPositions = async () => {
+     try {
+      await this.ensureInitialized();
+      
+      const positionCount = await this.contract.getPositionCount();
+      console.log(`Total positions: ${positionCount}`);
+      
+      for (let i = 0; i < positionCount.toNumber(); i++) {
+        const positionInfo = await this.contract.getPosition(i);
+        console.log(`Position ${i}: ${positionInfo.title}`);
+      }
+    } catch (error) {
+      console.error('Error logging positions:', error);
+    }
   };
 }
 

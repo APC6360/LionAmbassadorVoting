@@ -13,7 +13,7 @@ export const WalletProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [chainId, setChainId] = useState(null);
 
-  // Check if browser has ethereum object
+  
   const hasEthereum = () => {
     return typeof window !== 'undefined' && window.ethereum !== undefined;
   };
@@ -87,7 +87,7 @@ export const WalletProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // Check if we're in a browser environment first
+  
     if (typeof window !== 'undefined') {
       const isWalletConnected = localStorage.getItem('isWalletConnected');
       
@@ -95,12 +95,12 @@ export const WalletProvider = ({ children }) => {
         checkIfWalletIsConnected();
       }
 
-      // Set up event listeners
+    
       if (window.ethereum) {
         window.ethereum.on('accountsChanged', handleAccountsChanged);
         window.ethereum.on('chainChanged', handleChainChanged);
         
-        // Cleanup
+   
         return () => {
           window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
           window.ethereum.removeListener('chainChanged', handleChainChanged);
