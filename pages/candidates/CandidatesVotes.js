@@ -109,7 +109,7 @@ export default function VotingPage() {
       
       // Redirect to results page after successful submission
       setTimeout(() => {
-        router.push('/voting/results');
+        router.push('/pages/results');
       }, 2000);
     } catch (error) {
       console.error('Error submitting votes:', error);
