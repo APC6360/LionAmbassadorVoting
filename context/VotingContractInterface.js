@@ -153,15 +153,15 @@ class VotingContractInterface {
 
   // Helper method to find position index by title
   findPositionIndex = (title) => {
-    // This needs to be implemented based on the positions available
-    // For now, we'll return a placeholder
-    // In a real implementation, you would fetch all positions and find the index
     const positionMap = {
-      'Chairman2k': 0,
-      'Secretary2k': 1,
-      '2kOld': 2,
-      '2kNew': 3,
-      // Add more as needed
+      'University Relations Director': 0,
+      'Director of Communications': 1,
+      'Secretary': 2,
+      '2kOld Committee Directors': 3,
+      '2kNew Committee Directors': 4,
+      'Director of Internal Affairs': 5,
+      'Tour Director': 6,
+      'Chief Information Director': 7
     };
     
     return positionMap[title] !== undefined ? positionMap[title] : -1;

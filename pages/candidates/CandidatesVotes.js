@@ -19,6 +19,7 @@ export default function VotingPage() {
   useEffect(() => {
     if (isConnected && account) {
       loadUserVotes();
+      VotingContractInterface.logAllPositions();
     }
   }, [isConnected, account]);
 
