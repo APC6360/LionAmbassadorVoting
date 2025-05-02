@@ -15,11 +15,14 @@ export default function VotingPage() {
   const { account, isConnected, connectWallet } = useWallet();
   const router = useRouter();
 
-  // Load previous votes if the user has already voted
+  
   useEffect(() => {
     if (isConnected && account) {
       loadUserVotes();
       VotingContractInterface.logAllPositions();
+      VotingContractInterface.debugPositions().then(positions => {
+        console.log('Contract positions:', positions);
+      });
     }
   }, [isConnected, account]);
 

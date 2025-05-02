@@ -87,24 +87,32 @@ class VotingContractInterface {
         throw new Error('Wallet not connected');
       }
       
-      //formatting votes
+     
       const positionIndices = [];
       const candidateSelections = [];
       
-      Object.entries(votes).forEach(([position, candidates]) => {
-        // position index
-        const positionIndex = this.findPositionIndex(position);
+     
+      for (const [position, candidates] of Object.entries(votes)) {
+       
+        const positionIndex = await this.findPositionIndex(position);
+        console.log(`Position: ${position}, Index: ${positionIndex}`);
+        
         if (positionIndex !== -1) {
           positionIndices.push(positionIndex);
           candidateSelections.push(candidates);
+        } else {
+          console.error(`Invalid position: ${position}`);
         }
-      });
+      }
       
       if (positionIndices.length === 0) {
         throw new Error('No valid positions selected');
       }
       
-      // calling contract
+      console.log('Position indices to submit:', positionIndices);
+      console.log('Candidate selections to submit:', candidateSelections);
+      
+      
       const tx = await this.contract.castVotes(positionIndices, candidateSelections);
       return await tx.wait(); 
     } catch (error) {
@@ -152,19 +160,30 @@ class VotingContractInterface {
   };
 
   // Helper method to find position index by title
-  findPositionIndex = (title) => {
-    const positionMap = {
-      'University Relations Director': 0,
-      'Director of Communications': 1,
-      'Secretary': 2,
-      '2kOld Committee Directors': 3,
-      '2kNew Committee Directors': 4,
-      'Director of Internal Affairs': 5,
-      'Tour Director': 6,
-      'Chief Information Director': 7
-    };
+  findPositionIndex = async (title) => {
+    try {
+      await this.ensureInitialized();
+      
     
-    return positionMap[title] !== undefined ? positionMap[title] : -1;
+      const positionCount = await this.contract.getPositionCount();
+      
+     
+      for (let i = 0; i < positionCount.toNumber(); i++) {
+        const positionInfo = await this.contract.getPosition(i);
+        
+      
+        if (positionInfo.title === title) {
+          return i;
+        }
+      }
+      
+     
+      console.error(`Position not found in contract: ${title}`);
+      return -1;
+    } catch (error) {
+      console.error('Error finding position index:', error);
+      return -1;
+    }
   };
  
     logAllPositions = async () => {
@@ -180,6 +199,33 @@ class VotingContractInterface {
       }
     } catch (error) {
       console.error('Error logging positions:', error);
+    }
+  };
+  
+debugPositions = async () => {
+    try {
+      await this.ensureInitialized();
+      
+      const positionCount = await this.contract.getPositionCount();
+      console.log(`Total positions in contract: ${positionCount}`);
+      
+      const positions = [];
+      for (let i = 0; i < positionCount.toNumber(); i++) {
+        const position = await this.contract.getPosition(i);
+        console.log(`Position ${i}: ${position.title}`);
+        positions.push({
+          index: i,
+          title: position.title,
+          maxVotes: position.maxVotes.toNumber(),
+          candidateCount: position.candidateCount.toNumber()
+        });
+      }
+      
+      console.table(positions);
+      return positions;
+    } catch (error) {
+      console.error('Error debugging positions:', error);
+      return [];
     }
   };
 }

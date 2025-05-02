@@ -8,33 +8,33 @@ import Home from '@/components/Dashboard/Home';
 import { useRouter } from 'next/router';
 
 const Navbar = () => {
-  // Get wallet context safely with default values
+ 
   const walletContext = useWallet();
   
-  // Safely destructure values with fallbacks
+ 
   const account = walletContext?.account || '';
   const isConnected = walletContext?.isConnected || false;
   const connectWallet = walletContext?.connectWallet || (() => {});
   const disconnectWallet = walletContext?.disconnectWallet || (() => {});
   
-  // Format address for display
+
   const formatAddress = (address) => {
     if (!address) return '';
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  // Get button text based on connection status
+  
   const getButtonText = () => {
     return isConnected ? formatAddress(account) : 'Connect Wallet';
   };
 
-  // Handle wallet button click with error catching
+
   const handleWalletClick = async () => {
     try {
       if (isConnected) {
         disconnectWallet();
       } else {
-        // Check if MetaMask is installed
+    
         if (typeof window !== 'undefined' && !window.ethereum) {
           alert('Please install MetaMask to connect your wallet');
           return;
