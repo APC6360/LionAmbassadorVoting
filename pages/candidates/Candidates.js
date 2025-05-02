@@ -1,3 +1,5 @@
+//this is the candidates page for the Lion Ambassador voting system
+//it displays the candidates for each position and their information
 import React from 'react'
 import { styled } from 'styled-components'
 import Navbar from "@/components/Dashboard/Navbar"

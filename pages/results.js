@@ -1,4 +1,4 @@
-
+//this is the results page for the voting app, it shows the results of the voting
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import Navbar from '@/components/Dashboard/Navbar';

@@ -1,3 +1,5 @@
+//this is the admin page for the voting contract, where the admin can add positions and candidates
+
 import Navbar from '@/components/Dashboard/Navbar';
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
@@ -75,7 +77,7 @@ export default function AdminPage() {
 
   return (
     <Container>
-        <Navbar />
+      
       <Title>Voting Contract Admin</Title>
       
       {!isConnected ? (
@@ -84,6 +86,7 @@ export default function AdminPage() {
         <Message>{message}</Message>
       ) : (
         <>
+        <Navbar />
           <StatusSection>
             <h2>Contract Status</h2>
             <p>Connected as: {account}</p>

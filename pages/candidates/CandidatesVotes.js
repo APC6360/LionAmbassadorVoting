@@ -1,3 +1,6 @@
+//this is a voting page for the Lion Ambassador elections. It allows users to select candidates for various positions and submit their votes. 
+//The page interacts with a smart contract to manage the voting process.
+
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import Navbar from '@/components/Dashboard/Navbar';

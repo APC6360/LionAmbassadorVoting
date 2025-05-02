@@ -1,3 +1,4 @@
+//this file is used to manage the wallet connection and provide the wallet address to the rest of the app
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const WalletContext = createContext({
