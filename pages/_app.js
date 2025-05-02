@@ -1,6 +1,7 @@
 import Head from 'next/head' //use instead of head
 import { StateContext } from "@/context/StateContext"
 import { createGlobalStyle } from 'styled-components'
+import { WalletProvider } from '@/context/WalletContext';
 
 export const GlobalStyle = createGlobalStyle`
   * 
@@ -29,7 +30,9 @@ export default function App({ Component, pageProps }) {
         <GlobalStyle />
 
       <StateContext>
-        <Component {...pageProps} />
+        <WalletProvider>
+          <Component {...pageProps} />
+        </WalletProvider>
       </StateContext>
     </>
   )

@@ -1,11 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import Navbar from '@/components/Dashboard/Navbar';
 import Image from 'next/image';
-import { positions } from '../../components/Dashboard/candidatesData'; 
+import { positions } from '../../components/Dashboard/candidatesData';
+import { useWallet } from '../../context/WalletContext';
+import VotingContractInterface from '../../context/VotingContractInterface';
+import { useRouter } from 'next/router';
 
 export default function VotingPage() {
   const [votes, setVotes] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const { account, isConnected, connectWallet } = useWallet();
+  const router = useRouter();
+
+  // Load previous votes if the user has already voted
+  useEffect(() => {
+    if (isConnected && account) {
+      loadUserVotes();
+    }
+  }, [isConnected, account]);
+
+  const loadUserVotes = async () => {
+    try {
+      const userVotes = await VotingContractInterface.getVoterSelections(account);
+      if (Object.keys(userVotes).length > 0) {
+        setVotes(userVotes);
+        setSuccess('Your previous votes have been loaded.');
+      }
+    } catch (error) {
+      console.error('Error loading user votes:', error);
+      setError('Failed to load your previous votes. Please try again.');
+    }
+  };
 
   const handleVote = (position, candidate) => {
     const maxVotes = position.includes('2kOld') || position.includes('2kNew') ? 3 : 1;
@@ -31,9 +59,45 @@ export default function VotingPage() {
     return (votes[position] || []).includes(candidate);
   };
 
-  const handleSubmit = () => {
-    console.log('Submitted votes:', votes);
-    alert('Votes submitted!');
+  const handleSubmit = async () => {
+    if (!isConnected) {
+      try {
+        await connectWallet();
+        setError('');
+        return; // Return here, as we need to wait for the connection to update
+      } catch (error) {
+        setError('Failed to connect wallet. Please try again.');
+        return;
+      }
+    }
+
+    // Check if there are any votes to submit
+    if (Object.keys(votes).length === 0) {
+      setError('Please select at least one candidate before submitting.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setError('');
+      setSuccess('');
+
+      // Cast votes through the contract
+      const result = await VotingContractInterface.castVotes(votes, account);
+      
+      setSuccess('Your votes have been successfully submitted to the blockchain!');
+      console.log('Transaction result:', result);
+      
+      // Redirect to results page after successful submission
+      setTimeout(() => {
+        router.push('/voting/results');
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting votes:', error);
+      setError(`Failed to submit votes: ${error.message || 'Unknown error'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -45,6 +109,19 @@ export default function VotingPage() {
           Vote for <strong>1</strong> candidate per position.<br />
           For <strong>2kOld</strong> and <strong>2kNew</strong>, vote for up to <strong>3</strong>.
         </PageSubtitle>
+        
+        {!isConnected && (
+          <ConnectWalletButton onClick={connectWallet}>
+            Connect Wallet to Vote
+          </ConnectWalletButton>
+        )}
+        
+        {isConnected && (
+          <WalletInfo>Connected: {account.substring(0, 6)}...{account.substring(account.length - 4)}</WalletInfo>
+        )}
+        
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {success && <SuccessMessage>{success}</SuccessMessage>}
       </VotingHeader>
 
       {positions.map((section, index) => (
@@ -67,6 +144,7 @@ export default function VotingPage() {
                   <VoteButton
                     onClick={() => handleVote(section.title, candidate.name)}
                     selected={isSelected(section.title, candidate.name)}
+                    disabled={isSubmitting}
                   >
                     {isSelected(section.title, candidate.name) ? 'Selected' : 'Select'}
                   </VoteButton>
@@ -86,7 +164,12 @@ export default function VotingPage() {
             </li>
           ))}
         </ul>
-        <SubmitButton onClick={handleSubmit}>Submit Vote</SubmitButton>
+        <SubmitButton 
+          onClick={handleSubmit} 
+          disabled={isSubmitting || !isConnected}
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit Vote'}
+        </SubmitButton>
       </SummarySection>
     </PageContainer>
   );
@@ -97,6 +180,7 @@ const PageContainer = styled.div`
   color: #ffffff;
   font-family: 'Gill Sans MT', sans-serif;
   padding-bottom: 60px;
+  min-height: 100vh;
 `;
 
 const VotingHeader = styled.div`
@@ -115,6 +199,54 @@ const PageTitle = styled.h1`
 const PageSubtitle = styled.p`
   font-size: 16px;
   color: #cdd5e0;
+  margin-bottom: 20px;
+`;
+
+const ConnectWalletButton = styled.button`
+  background-color: #cdd5e0;
+  color: #0A1B3F;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+
+  &:hover {
+    background-color: #ffffff;
+  }
+`;
+
+const WalletInfo = styled.div`
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #1e2a47;
+  border-radius: 8px;
+  display: inline-block;
+  font-size: 14px;
+  color: #cdd5e0;
+`;
+
+const ErrorMessage = styled.div`
+  color: #ff6b6b;
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const SuccessMessage = styled.div`
+  color: #69db7c;
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(105, 219, 124, 0.1);
+  border-radius: 8px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const PositionContainer = styled.div`
@@ -127,7 +259,7 @@ const PositionTitle = styled.h2`
   margin-bottom: 20px;
   color: #cdd5e0;
   border-bottom: 2px solid #cdd5e0;
-  padding-bottom: 8px;
+  padding-bottom: 8px
 `;
 
 const CardRow = styled.div`

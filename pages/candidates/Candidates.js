@@ -41,7 +41,8 @@ const PageContainer = styled.div`
 const HeaderTitle = styled.h1`
   text-align: center;
   font-size: 48px;
-  margin: 30px 0;
+  margin: 30px ;
+  background: white;
 `;
 
 const PositionSection = styled.section`

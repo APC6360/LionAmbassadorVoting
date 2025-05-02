@@ -1,0 +1,299 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_positionIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_committee",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_photoUrl",
+				"type": "string"
+			}
+		],
+		"name": "addCandidate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_title",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_maxVotes",
+				"type": "uint256"
+			}
+		],
+		"name": "addPosition",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "_positionIndices",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "string[][]",
+				"name": "_candidateNames",
+				"type": "string[][]"
+			}
+		],
+		"name": "castVotes",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "voter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string[]",
+				"name": "positions",
+				"type": "string[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "string[]",
+				"name": "selections",
+				"type": "string[]"
+			}
+		],
+		"name": "VotesCast",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "admin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_positionIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_candidateIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "getCandidate",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "committee",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "photoUrl",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "voteCount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_positionIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "getCandidateCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_positionIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "getPosition",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "maxVotes",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "candidateCount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getPositionCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_voter",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_positionIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "getVoterSelections",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "positions",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "maxVotes",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "voterCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "voterSelections",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
