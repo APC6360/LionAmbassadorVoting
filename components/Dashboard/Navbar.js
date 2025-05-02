@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { logOut } from '@/backend/Auth';
 import { useStateContext } from '@/context/StateContext';
 import { useWallet } from '@/context/WalletContext';
-import Home from '@/components/Dashboard/Home';
+
 import { useRouter } from 'next/router';
 
 const Navbar = () => {
