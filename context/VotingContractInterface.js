@@ -1,5 +1,5 @@
 //this file is used to interact with the smart contract
-// it contains functions to initialize the contract, add positions and candidates, cast votes, and fetch results
+//it contains functions to initialize the contract, add positions and candidates, cast votes, and fetch results
 import { ethers } from 'ethers';
 import CandidateVotingABI from './CandidateVotingABI.json';
 import { positions } from '../components/Dashboard/candidatesData';
