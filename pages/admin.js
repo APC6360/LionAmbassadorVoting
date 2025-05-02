@@ -1,4 +1,4 @@
-// pages/admin.js
+import Navbar from '@/components/Dashboard/Navbar';
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useWallet } from '../context/WalletContext';
@@ -24,7 +24,7 @@ export default function AdminPage() {
           if (!isCurrentUserAdmin) {
             setMessage('You are not the admin of this contract');
           } else {
-            // Load positions if admin
+           
             const contractPositions = await VotingContractInterface.getAllContractPositions();
             setPositions(contractPositions);
           }
@@ -45,7 +45,7 @@ export default function AdminPage() {
       
       if (result) {
         setMessage('Positions added successfully');
-        // Refresh positions
+        
         const contractPositions = await VotingContractInterface.getAllContractPositions();
         setPositions(contractPositions);
       } else {
@@ -75,6 +75,7 @@ export default function AdminPage() {
 
   return (
     <Container>
+        <Navbar />
       <Title>Voting Contract Admin</Title>
       
       {!isConnected ? (
@@ -118,7 +119,7 @@ export default function AdminPage() {
   );
 }
 
-// Styled components
+
 const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;

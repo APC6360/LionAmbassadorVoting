@@ -15,12 +15,12 @@ export default function VotingPage() {
   const { account, isConnected, connectWallet } = useWallet();
   const router = useRouter();
 
-  // Add this to your useEffect in VotingPage.js
+ 
   useEffect(() => {
     const initializeVoting = async () => {
       if (isConnected && account) {
         try {
-          // Check if positions exist in the contract
+         
           const contractPositions = await VotingContractInterface.getAllContractPositions();
         
           if (contractPositions.length === 0) {
@@ -28,7 +28,7 @@ export default function VotingPage() {
             return;
           }
         
-          // Load user votes if positions exist
+        
           await loadUserVotes();
         } catch (error) {
           console.error('Error initializing voting:', error);
@@ -40,7 +40,7 @@ export default function VotingPage() {
     initializeVoting();
   }, [isConnected, account]);
   
-
+  //Load user votes from the contract
   const loadUserVotes = async () => {
     try {
       if (!isConnected || !account) {
